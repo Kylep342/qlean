@@ -9,6 +9,11 @@ import (
 	"strings"
 )
 
+// used to capitalize SQL keywords
+func formatKeyword(keyword string) string {
+	return "\n" + strings.ToUpper(keyword)
+}
+
 func qleanSQL(query string) string {
 	/**
 	 *
@@ -33,9 +38,7 @@ func qleanSQL(query string) string {
 	whtspregex := regexp.MustCompile("\\s+")
 	//
 	spacedsql := whtspregex.ReplaceAllString(query, " ")
-	// TODO: Write a function to call .upper on any keyword and pad with \n & ' '
-	// do this with ReplaceAllFunc
-	return kwregex.ReplaceAllString(spacedsql, "\n$1 ")
+	return strings.TrimSpace(kwregex.ReplaceAllStringFunc(spacedsql, formatKeyword))
 }
 
 func main() {
