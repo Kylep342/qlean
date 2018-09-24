@@ -1,3 +1,11 @@
+/**
+*
+* qlean - a SQL pretty printer tool
+* Copyright 2018 by Kyle Pekosh
+*
+*
+ */
+
 package main
 
 import (
@@ -18,15 +26,12 @@ func formatKeyword(keyword string) string {
 func qleanSQL(query string) string {
 	/**
 	 *
-	 *
-	 *
-	 *
 	 */
 	kwarray := []string{
 		"WITH",
 		"SELECT",
 		"FROM",
-		"(?:(?:LEFT |RIGHT |FULL )?(:OUTER |INNER )?JOIN)",
+		"(?:(?:LEFT |RIGHT |FULL )?(OUTER |INNER )?JOIN)",
 		"WHERE",
 		"GROUP",
 		"HAVING",
