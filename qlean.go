@@ -20,15 +20,15 @@ import (
 
 // used to capitalize SQL keywords
 func formatKeyword(keyword string) string {
-	fmtKeyword := strings.ToUpper(keyword)
+	fmtKeyword := strings.ToUpper(strings.TrimSpace(keyword))
 	var prefix string
 	switch fmtKeyword {
-		case "ON", "ASC", "DESC", "LIKE":
-			prefix = ""
-		default:
-			prefix = "\n"
+	case "ASC", "DESC", "IN", "LIKE", "ON", "USING":
+		prefix = " "
+	default:
+		prefix = "\n"
 	}
-	return prefix + fmtKeyword
+	return prefix + fmtKeyword + " "
 }
 
 func qleanSQL(query string) string {
@@ -36,7 +36,7 @@ func qleanSQL(query string) string {
 	 *
 	 */
 	kwarray := []string{
-		"WITH",
+		"WITH ",
 		"SELECT",
 		"FROM",
 		"(?:(?:LEFT |RIGHT |FULL )?(OUTER |INNER )?JOIN)",
@@ -45,6 +45,7 @@ func qleanSQL(query string) string {
 		"WHERE",
 		"AND",
 		"OR",
+		"IN",
 		"LIKE",
 		"GROUP BY",
 		"HAVING",
@@ -57,7 +58,7 @@ func qleanSQL(query string) string {
 
 	kwstring := strings.Join(kwarray, "|")
 	// Add case insensitive searching for keywords
-	kwregex := regexp.MustCompile("(?i)(" + kwstring + ")\\s+")
+	kwregex := regexp.MustCompile("(?i)[\r\n\t\f\v )](" + kwstring + ")[\r\n\t\f\v (]")
 	whtspregex := regexp.MustCompile("\\s+")
 	//
 	spacedsql := whtspregex.ReplaceAllString(query, " ")
