@@ -20,7 +20,15 @@ import (
 
 // used to capitalize SQL keywords
 func formatKeyword(keyword string) string {
-	return "\n" + strings.ToUpper(keyword)
+	fmtKeyword := strings.ToUpper(keyword)
+	var prefix string
+	switch fmtKeyword {
+		case "ON", "ASC", "DESC", "LIKE":
+			prefix = ""
+		default:
+			prefix = "\n"
+	}
+	return prefix + fmtKeyword
 }
 
 func qleanSQL(query string) string {
@@ -32,11 +40,20 @@ func qleanSQL(query string) string {
 		"SELECT",
 		"FROM",
 		"(?:(?:LEFT |RIGHT |FULL )?(OUTER |INNER )?JOIN)",
+		"ON",
+		"USING",
 		"WHERE",
-		"GROUP",
+		"AND",
+		"OR",
+		"LIKE",
+		"GROUP BY",
 		"HAVING",
-		"ORDER",
-		"WINDOW"}
+		"ORDER BY",
+		"WINDOW",
+		"LIMIT",
+		"OFFSET",
+		"ASC",
+		"DESC"}
 
 	kwstring := strings.Join(kwarray, "|")
 	// Add case insensitive searching for keywords
@@ -66,17 +83,15 @@ func main() {
 	}
 
 	reader := bufio.NewReader(source)
-	var output []string
+	var output string
 
 	for {
 		input, err := reader.ReadString(';')
 		if err != nil && err == io.EOF {
 			break
 		}
-		output = append(output, qleanSQL(input))
+		output += qleanSQL(input)
 	}
 
-	for j := 0; j < len(output); j++ {
-		fmt.Printf("%s", output[j])
-	}
+	fmt.Printf("%s", output)
 }
