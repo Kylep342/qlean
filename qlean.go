@@ -23,7 +23,7 @@ func formatKeyword(keyword string) string {
 	fmtKeyword := strings.ToUpper(strings.TrimSpace(keyword))
 	var prefix string
 	switch fmtKeyword {
-	case "ASC", "DESC", "IN", "LIKE", "ON", "USING":
+	case "AS", "ASC", "DESC", "IN", "LIKE", "ON", "USING":
 		prefix = " "
 	default:
 		prefix = "\n"
@@ -39,6 +39,7 @@ func qleanSQL(query string) string {
 		"WITH ",
 		"SELECT",
 		"FROM",
+		"AS",
 		"(?:(?:LEFT |RIGHT |FULL )?(OUTER |INNER )?JOIN)",
 		"ON",
 		"USING",
@@ -58,7 +59,7 @@ func qleanSQL(query string) string {
 
 	kwstring := strings.Join(kwarray, "|")
 	// Add case insensitive searching for keywords
-	kwregex := regexp.MustCompile("(?i)[\r\n\t\f\v )](" + kwstring + ")[\r\n\t\f\v (]")
+	kwregex := regexp.MustCompile("(?i)[\r\n\t\f\v ()](" + kwstring + ")[\r\n\t\f\v ()]")
 	whtspregex := regexp.MustCompile("\\s+")
 	//
 	spacedsql := whtspregex.ReplaceAllString(query, " ")
